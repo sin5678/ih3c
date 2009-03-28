@@ -1,4 +1,4 @@
-/* Copyright (c) 2009-2009 H3C Watcher
+/* Copyright (c) 2009
  * Subject to the GPLv3 Software License. 
  * (See accompanying file GPLv3.txt or http://www.gnu.org/licenses/gpl.txt)
  * Author: Xiao, Yang
@@ -24,11 +24,12 @@ NOTIFYICONDATA nid = {0};
 const UINT WM_NOTIFYICON = WM_USER+111;
 const DWORD MY_TRAY_ICON_ID = 1;
 HICON appIcon = NULL;
+HMENU popupMenu = NULL;
 
 mutex showMsgMtx;
 
-void ShowBubbleMessage(const wstring& message);
-Restarter restarter(seconds(4), seconds(5), "172.18.59.254", "80", &ShowBubbleMessage);
+void ShowBubbleMessage(const wstring& message, const wstring& title);
+Restarter restarter(seconds(5), "172.18.59.254", 80, &ShowBubbleMessage);
 
 // 此代码模块中包含的函数的前向声明:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
@@ -50,6 +51,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
             GetSystemMetrics(SM_CXSMICON),
             GetSystemMetrics(SM_CYSMICON),
             LR_DEFAULTCOLOR);
+
+	popupMenu = GetSubMenu(LoadMenu(hInstance, MAKEINTRESOURCE(IDR_POPUPMENU)), 0);
 
  	// TODO: 在此放置代码。
 	MSG msg;
@@ -117,16 +120,16 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	return RegisterClassEx(&wcex);
 }
 
-template<typename T>
-void CopyStringIntoBuffer(const basic_string<T>& s, T* buff, size_t buffSize)
-{
-	memcpy(buff, s.c_str(), std::min(buffSize, s.size()+1)*sizeof(T));
-}
-
-template<typename T>
-inline size_t ArrayElementCount(const T& t)
+template<typename ArrayT>
+inline size_t ArrayElementCount(const ArrayT& t)
 {
 	return sizeof(t)/sizeof(t[0]);
+}
+
+template<typename T, typename ArrayT>
+void CopyStringIntoArray(const basic_string<T>& s, ArrayT& buff)
+{
+	memcpy(buff, s.c_str(), std::min(ArrayElementCount(buff), s.size()+1)*sizeof(T));
 }
 
 //
@@ -157,13 +160,12 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    UpdateWindow(hWnd);
 
 	//OK，在系统托盘显示图标。
-	nid.cbSize = sizeof(NOTIFYICONDATA);
+	nid.cbSize = NOTIFYICONDATA_V2_SIZE;
 	nid.uID = MY_TRAY_ICON_ID;
 	nid.uFlags = NIF_MESSAGE|NIF_ICON|NIF_TIP;
 	nid.uCallbackMessage = WM_NOTIFYICON;
 	nid.hIcon = appIcon;
-        
-	CopyStringIntoBuffer<wchar_t>(L"H3CWatcher", nid.szTip, ArrayElementCount(nid.szTip));
+    CopyStringIntoArray<wchar_t>(L"H3CWatcher", nid.szTip);
 
 	nid.hWnd = hWnd;
 
@@ -174,11 +176,12 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
-void ShowBubbleMessage(const wstring& message)
+void ShowBubbleMessage(const wstring& message, const wstring& title)
 {
 	mutex::scoped_lock lck(showMsgMtx);
 	nid.uFlags = NIF_INFO;
-	CopyStringIntoBuffer(message, nid.szInfo, ArrayElementCount(nid.szInfo));
+	CopyStringIntoArray(message, nid.szInfo);
+    CopyStringIntoArray(title, nid.szInfoTitle);
 	Shell_NotifyIcon(NIM_MODIFY, &nid);
 }
 
@@ -212,6 +215,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case IDM_EXIT:
 			DestroyWindow(hWnd);
 			break;
+		case ID_POPUPMENU_EXIT:
+			if ( MessageBox( hWnd, L"确定要退出吗？退出之后将失去断线重连功能。", L"iH3C退出确认",
+				MB_ICONQUESTION|MB_OKCANCEL ) == IDOK )
+			{
+				SendMessage(hWnd, WM_CLOSE, 0, 0);
+			}
+			break;
+		case ID_POPUPMENU_RESTART_MYH3C:
+			restarter.TryRestart();
+			break;
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
 		}
@@ -224,6 +237,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		Shell_NotifyIcon(NIM_DELETE, &nid);
+		break;
+	case WM_NOTIFYICON:
+		{
+			if(lParam==WM_RBUTTONUP)
+			{
+				SetForegroundWindow(hWnd);
+				POINT pt = {0};
+				GetCursorPos(&pt);
+				TrackPopupMenu(popupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, hWnd, NULL);
+			}
+		}
 		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);

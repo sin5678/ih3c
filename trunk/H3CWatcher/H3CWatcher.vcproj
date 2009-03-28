@@ -246,14 +246,18 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="ServiceManager"
+			Name="Service"
 			>
 			<File
-				RelativePath=".\common\ServiceManager.cpp"
+				RelativePath=".\ServiceController.h"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="NetworkInfo"
+			>
 			<File
-				RelativePath=".\common\ServiceManager.h"
+				RelativePath=".\NetworkInfo.h"
 				>
 			</File>
 		</Filter>
