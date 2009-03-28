@@ -1,4 +1,4 @@
-/* Copyright (c) 2009-2009 H3C Watcher
+/* Copyright (c) 2009
  * Subject to the GPLv3 Software License. 
  * (See accompanying file GPLv3.txt or http://www.gnu.org/licenses/gpl.txt)
  * Author: Xiao, Yang
@@ -9,29 +9,27 @@
 #include "stdafx.h"
 #include <Windows.h>
 #include <memory>
-#include "common/ServiceManager.h"
+#include "ServiceController.h"
 
 class Restarter
 {
 public:
-	typedef function<void(const wstring&)> MsgFunc;
+	typedef function<void(const wstring&, const wstring&)> MsgFunc;
 protected:
-	auto_ptr<thread> prestartthrd, pcheckthrd;
+	auto_ptr<thread> pcheckthrd;
 	MsgFunc onMessage;
-	ptime lastOKTime;
-	time_duration maxNoConnTime, checkInterval;
-	string host, port;
+	time_duration checkInterval, restartInterval;
+	string host;
+	int port;
 	bool lastTimeConnectable;
-	volatile bool needRestart;
 public:
-	Restarter(const time_duration& maxNoConnTime_, const time_duration& checkInterval_, const string& host_,
-		const string& port_, const MsgFunc& onMessage_)
-		:maxNoConnTime(maxNoConnTime_), host(host_), port(port_), lastTimeConnectable(false),
-		onMessage(onMessage_), needRestart(false), checkInterval(checkInterval_){}
+	Restarter(const time_duration& checkInterval_, const string& host_,
+		int port_, const MsgFunc& onMessage_)
+		:host(host_), port(port_), lastTimeConnectable(false),
+		onMessage(onMessage_), checkInterval(checkInterval_){}
 	  
 	~Restarter()
 	{
-		prestartthrd.reset();
 		pcheckthrd.reset();
 	}
 
@@ -40,84 +38,104 @@ public:
 		pcheckthrd.reset(new thread(bind(&Restarter::Check, this)));
 	}
 
+	void TryRestart(const wstring& msg = L"H3C正在重新连接.....")
+	{
+		if(onMessage)
+			onMessage(msg, L"H3C正在重连");
+		ServiceController sc;
+		if(!sc.Initialize())
+		{
+			if(onMessage)
+				onMessage(L"无法取得对服务的控制权。请尝试以管理员的身份运行此程序。",
+					L"程序权限不足");
+			return;
+		}
+		if(!sc.RestartService(L"MyH3C"))
+		{
+			if(onMessage)
+				onMessage(L"在重新启动MyH3C服务的过程中出现错误。",
+					L"无法重启MyH3C服务");
+		}
+	}
+
 protected:
+	void RestartMyH3C(const wstring& msg)
+	{
+		lastTimeConnectable = false;
+
+		TryRestart(msg);
+		this_thread::sleep(seconds(3));
+	}
+
+	class ConnectWithTimeout
+	{
+	public:
+		ConnectWithTimeout()
+			: timer_(io_service_), socket_(io_service_), succeeded(false)
+		{
+		}
+
+		void run(const string& addr, int port, const time_duration& timeout)
+		{
+			socket_.async_connect(
+				ip::tcp::endpoint(boost::asio::ip::address_v4::from_string(addr), port),
+				boost::bind(&ConnectWithTimeout::handle_connect, this,
+				boost::asio::placeholders::error));
+
+			timer_.expires_from_now(timeout);
+			timer_.async_wait(boost::bind(&ConnectWithTimeout::close, this));
+			io_service_.run();
+		}
+
+		void handle_connect(const boost::system::error_code& err)
+		{
+			succeeded = !(err);
+			close();
+		}
+
+		void close()
+		{
+			socket_.close();
+		}
+
+		bool connection_succeeded() const
+		{
+			return succeeded;
+		}
+	
+	private:  
+		io_service io_service_;  
+		deadline_timer timer_;  
+		ip::tcp::socket socket_;
+		bool succeeded;
+	};
+
 	void Check()
 	{
 		while(true)
 		{
-			using namespace boost::asio;
-			using namespace boost::asio::ip;
-			using namespace boost;
+			ConnectWithTimeout cwt;
+			cwt.run(host, port, seconds(2));
 
-			io_service io_service_;
-
-			tcp::resolver resolver(io_service_);
-			tcp::resolver::query query(ip::tcp::v4(), host, lexical_cast<std::string>(port));
-			tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
-			tcp::resolver::iterator end;
-			tcp::socket socket_(io_service_);
-
-			boost::system::error_code error = boost::asio::error::host_not_found;
-			while (error && endpoint_iterator != end)
+			if (cwt.connection_succeeded())
 			{
-				socket_.close();
-				socket_.connect(*endpoint_iterator++, error);
-			}
-
-			ptime now = microsec_clock::local_time();
-			if (error)
-			{
-			}
-			else
-			{
-				socket_.close();
-				lastOKTime = now;
 				if(!lastTimeConnectable)
 				{
-					if(onMessage) onMessage(L"网络连接正常。");
+					if(onMessage)
+						onMessage(L"已经成功通过H3C连接到网络。", L"网络已正常连接");
 					lastTimeConnectable = true;
 				}
 			}
 
-			if ( lastOKTime.is_not_a_date_time() || now - lastOKTime > maxNoConnTime )
+			if ( !cwt.connection_succeeded() )
 			{
-				lastTimeConnectable = false;
-				if(onMessage)
-					onMessage(L"超出指定时间未能连上网关，H3C连接可能已断开。\r\nH3C正在重新连接.....");
-				if(!prestartthrd.get())
-				{
-					prestartthrd.reset(new thread(bind(&Restarter::Restart, this)));
-				}
-				needRestart = true;
-			}
-
-			this_thread::sleep(checkInterval);
-		}
-	}
-
-	void Restart()
-	{
-		while(true)
-		{
-			if(needRestart)
-			{
-				if(onMessage)
-					onMessage(L"H3C正在重新连接.....");
-				ServiceManager sm;
-				if(!sm.Initialize())
-				{
-					if(onMessage) onMessage(L"无法取得对服务的控制权。请尝试以管理员的身份运行此程序。");
-				}
-
-				sm.StopService(L"MyH3C");
-				sm.StartService(L"MyH3C");
-
-				needRestart = false;
+				RestartMyH3C(L"超出指定时间未能连上网关，H3C连接可能已断开。\r\nH3C正在重新连接.....");
 			}
 			else
 			{
-				this_thread::sleep(milliseconds(500));
+				this_thread::sleep(checkInterval);
 			}
 		}
 	}
+
 };

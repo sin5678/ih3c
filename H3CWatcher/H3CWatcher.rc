@@ -1,11 +1,11 @@
-//Microsoft Visual C++ 生成的资源脚本。
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
 //
-// 从 TEXTINCLUDE 2 资源生成。
+// Generated from the TEXTINCLUDE 2 resource.
 //
 #ifndef APSTUDIO_INVOKED
 #include "targetver.h"
@@ -13,48 +13,72 @@
 #define APSTUDIO_HIDDEN_SYMBOLS
 #include "windows.h"
 #undef APSTUDIO_HIDDEN_SYMBOLS
+
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
 
+/////////////////////////////////////////////////////////////////////////////
+// 中文(中华人民共和国) resources
+
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
-LANGUAGE 4, 2
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
 #pragma code_page(936)
+#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// 图标
+// Icon
 //
 
-// ID 值最低的图标放在最前面，以确保应用程序图标
-// 在所有系统中保持一致。
-
-IDI_H3CWATCHER       ICON         "H3CWatcher.ico"
-IDI_SMALL               ICON         "small.ico"
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_H3CWATCHER          ICON                    "H3CWatcher.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// 菜单
+// Menu
 //
 
-IDC_H3CWATCHER MENU
+IDC_H3CWATCHER MENU 
 BEGIN
     POPUP "文件(&F)"
     BEGIN
-        MENUITEM "退出(&X)",                IDM_EXIT
+        MENUITEM "退出(&X)",                      IDM_EXIT
     END
     POPUP "帮助(&H)"
     BEGIN
-        MENUITEM "关于(&A) ...",           IDM_ABOUT
+        MENUITEM "关于(&A) ...",                  IDM_ABOUT
+    END
+END
+
+IDR_POPUPMENU MENUEX 
+BEGIN
+    POPUP "popupMenu",                      65535,MFT_STRING,MFS_ENABLED
+    BEGIN
+        MENUITEM "重新启动MyH3C服务(&R)",             ID_POPUPMENU_RESTART_MYH3C,MFT_STRING | MFT_RIGHTJUSTIFY,MFS_ENABLED
+        MENUITEM MFT_SEPARATOR
+        POPUP "网卡选择(&S)",                       65535,MFT_STRING,MFS_ENABLED
+        BEGIN
+            MENUITEM "网卡1",                         ID_POPUPMENU_ADATPER1,MFT_STRING,MFS_ENABLED
+        END
+        MENUITEM "禁用当前连接(&D)",                  ID_POPUPMENU_DISABLE_CUR_ADAPTER,MFT_STRING,MFS_ENABLED
+        MENUITEM "启用当前连接(&E)",                  ID_POPUPMENU_ENABLE_CUR_ADAPTER,MFT_STRING,MFS_ENABLED
+        MENUITEM MFT_SEPARATOR
+        MENUITEM "我不会用iH3C，教教我！(&H)",           ID_POPUPMENU_HELP,MFT_STRING,MFS_ENABLED
+        MENUITEM "关于(&A)...",                   IDM_ABOUT,MFT_STRING,MFS_ENABLED
+        MENUITEM MFT_SEPARATOR
+        MENUITEM "退出(&X)",                      ID_POPUPMENU_EXIT,MFT_STRING,MFS_ENABLED
     END
 END
 
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// 快捷键
+// Accelerator
 //
 
-IDC_H3CWATCHER ACCELERATORS
+IDC_H3CWATCHER ACCELERATORS 
 BEGIN
     "?",            IDM_ABOUT,              ASCII,  ALT
     "/",            IDM_ABOUT,              ASCII,  ALT
@@ -63,19 +87,20 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// 对话框
+// Dialog
 //
 
 IDD_ABOUTBOX DIALOGEX 0, 0, 170, 62
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "关于 H3CWatcher"
-FONT 9, "MS Shell Dlg"
+FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
+    ICON            128,IDC_STATIC,14,14,21,20
     LTEXT           "H3CWatcher，1.0 版",IDC_STATIC,42,14,114,8,SS_NOPREFIX
     LTEXT           "Copyright (C) 2009",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "确定",IDOK,113,41,50,14,WS_GROUP
 END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -83,7 +108,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO
+GUIDELINES DESIGNINFO 
 BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
@@ -95,19 +120,21 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
+
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
 // TEXTINCLUDE
 //
-1 TEXTINCLUDE
+
+1 TEXTINCLUDE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE
+2 TEXTINCLUDE 
 BEGIN
-	"#ifndef APSTUDIO_INVOKED\r\n"
+    "#ifndef APSTUDIO_INVOKED\r\n"
     "#include ""targetver.h""\r\n"
     "#endif\r\n"
     "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
@@ -116,7 +143,7 @@ BEGIN
     "\0"
 END
 
-3 TEXTINCLUDE
+3 TEXTINCLUDE 
 BEGIN
     "\r\n"
     "\0"
@@ -124,18 +151,19 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
+
 /////////////////////////////////////////////////////////////////////////////
 //
-// 字符串表
+// String Table
 //
 
-STRINGTABLE
+STRINGTABLE 
 BEGIN
-   IDC_H3CWATCHER   "H3CWATCHER"
-   IDS_APP_TITLE       "H3CWatcher"
+    IDS_APP_TITLE           "H3CWatcher"
+    IDC_H3CWATCHER          "H3CWATCHER"
 END
 
-#endif
+#endif    // 中文(中华人民共和国) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -143,8 +171,10 @@ END
 #ifndef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
-// 从 TEXTINCLUDE 3 资源生成。
+// Generated from the TEXTINCLUDE 3 resource.
 //
 
+
 /////////////////////////////////////////////////////////////////////////////
-#endif    // 不是 APSTUDIO_INVOKED
+#endif    // not APSTUDIO_INVOKED
+
