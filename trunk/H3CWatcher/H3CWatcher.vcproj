@@ -261,6 +261,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="string_utils"
+			>
+			<File
+				RelativePath=".\string_utils.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\string_utils.h"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>
