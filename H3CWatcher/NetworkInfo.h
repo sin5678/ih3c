@@ -1,5 +1,6 @@
 #pragma once
 #include "stdafx.h"
+#include <exception>
 
 //Get network infos.
 class NetworkInfo
@@ -7,8 +8,14 @@ class NetworkInfo
 public:
 	typedef int AdpaterIdentifier;		//TODO: replace int with actual adpater identifier
 
+	class InvalidIdentifier : public runtime_error{
+	public:
+		InvalidIdentifier(const char* msg):runtime_error(msg){}
+	};
+
+	//adpaterPos: 传递给服务、写入pw.data中的“第几个网卡”。
 	static void EnumerateAdapters(
-		function<void(AdpaterIdentifier/*id*/, const wstring&/*name*/)>& onGotAdapter )
+		function<void(AdpaterIdentifier/*id*/, int /*adpaterPos*/, const wstring&/*name*/)>& onGotAdapter )
 	{
 		//TODO: implement this
 	}
@@ -28,4 +35,4 @@ public:
 	{
 		//TODO: implement this
 	}
-}
+};

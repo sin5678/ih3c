@@ -18,10 +18,13 @@ std::wstring mbstowcs(const string& r)
 {
     wstring result;
     size_t result_len = mbstowcs(NULL, r.c_str(), r.size());
-    result.resize(result_len);
-    wchar_t *result_buf = const_cast<wchar_t*>(result.data());
-    //result_buf[result_len-1] = 0;
-    mbstowcs(result_buf,  r.c_str(), result_len);
+	if(result_len!=-1)
+	{
+		result.resize(result_len);
+		wchar_t *result_buf = &result[0];
+		//result_buf[result_len-1] = 0;
+		mbstowcs(result_buf,  r.c_str(), result_len);
+	}
     return result;
 }
 
