@@ -1,1 +1,26 @@
-This is iH3C.
+iH3C是一个好用的、带自动断线重连功能的H3C客户端。
+
+如何使用：
+
+1)首先确保系统中不存在其它的正在运行的H3C客户端。如有，请卸载之。
+
+2)将软件包中的所有文件复制到你希望iH3C安家的目录下面。
+
+3)安装winpcap驱动包。如果还没有，请到
+  http://www.winpcap.org/install/default.htm下载。
+
+4)打开pw.data，将其中的user和password改成你的用户名和密码。
+
+5)运行h3c_svr.exe。它会将自身注册为系统服务。
+
+6)运行H3CWatcher.exe。现在你应该可以在系统托盘区（通常在屏幕的右下角）
+  看到iH3C的图标，同时H3C连接的提示气泡也将出现。
+
+7)iH3C是绿色的；除了它在系统中注册的服务。要卸载服务，请在命令行下执行
+  h3c_svr -u。你可以在命令行下执行 h3c_svr.exe --help 以获得使用更多信
+  息。
+
+最新的下载请到http://code.google.com/p/ih3c/downloads/list。
+中山大学05级 计算机科学与技术
+杨潇: yangxiaogreetings@gmail.com
+胡杨: coolcute@gmail.com
