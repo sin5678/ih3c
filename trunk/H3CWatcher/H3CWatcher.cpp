@@ -12,6 +12,9 @@
 #include <shellapi.h>
 #pragma comment(lib, "shell32.lib")
 #include "Restarter.h"
+#include "NetworkInfo.h"
+#include <sstream>
+#include "string_utils.h"
 
 #define MAX_LOADSTRING 100
 
@@ -29,7 +32,33 @@ HMENU popupMenu = NULL;
 mutex showMsgMtx;
 
 void ShowBubbleMessage(const wstring& message, const wstring& title);
-Restarter restarter(seconds(5), "172.18.59.254", 80, &ShowBubbleMessage);
+auto_ptr<Restarter> restarter;
+struct Settings
+{
+	NetworkInfo::AdpaterIdentifier aid;
+	string defGatewayAddr;
+	int defGatewayPort;
+};
+Settings curSetting;
+
+//读入设置。
+void LoadSettings()
+{
+	curSetting.defGatewayAddr = "172.18.59.254";
+	curSetting.defGatewayPort = 80;
+}
+
+void SaveSettings()
+{
+}
+
+//根据设置重启restarter。在程序开始时、以及设置变更时调用。
+void LaunchRestarter()
+{
+	restarter.reset(new Restarter(seconds(5), curSetting.defGatewayAddr,
+		curSetting.defGatewayPort, &ShowBubbleMessage));
+	restarter->Start();
+}
 
 // 此代码模块中包含的函数的前向声明:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
@@ -171,7 +200,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 	Shell_NotifyIcon(NIM_ADD, &nid);
 
-	restarter.Start();
+	LoadSettings();
+	LaunchRestarter();
 
    return TRUE;
 }
@@ -223,7 +253,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 		case ID_POPUPMENU_RESTART_MYH3C:
-			restarter.TryRestart();
+			restarter->TryRestart();
 			break;
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
@@ -246,6 +276,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				POINT pt = {0};
 				GetCursorPos(&pt);
 				TrackPopupMenu(popupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, hWnd, NULL);
+			}
+			else if(lParam==WM_LBUTTONUP)
+			{
+				wostringstream strm;
+				strm<<L"IPv4 connection testing address: \r\n"
+					<<mbstowcs(curSetting.defGatewayAddr)
+					<<L", port = "<<curSetting.defGatewayPort<<L"\r\n"
+					<<L"H3C User: \r\nH3C service restarts at:\r\n";
+				ShowBubbleMessage(strm.str(), L"iH3C当前设定");
 			}
 		}
 		break;
