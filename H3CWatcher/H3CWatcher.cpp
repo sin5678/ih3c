@@ -15,6 +15,7 @@
 #include "NetworkInfo.h"
 #include <sstream>
 #include "string_utils.h"
+#include "version.h"
 
 #define MAX_LOADSTRING 100
 
@@ -38,6 +39,7 @@ struct Settings
 	NetworkInfo::AdpaterIdentifier aid;
 	string defGatewayAddr;
 	int defGatewayPort;
+	time_duration chkInterval;
 };
 Settings curSetting;
 
@@ -46,6 +48,7 @@ void LoadSettings()
 {
 	curSetting.defGatewayAddr = "172.18.59.254";
 	curSetting.defGatewayPort = 80;
+	curSetting.chkInterval = seconds(5);
 }
 
 void SaveSettings()
@@ -55,7 +58,7 @@ void SaveSettings()
 //根据设置重启restarter。在程序开始时、以及设置变更时调用。
 void LaunchRestarter()
 {
-	restarter.reset(new Restarter(seconds(5), curSetting.defGatewayAddr,
+	restarter.reset(new Restarter(curSetting.chkInterval, curSetting.defGatewayAddr,
 		curSetting.defGatewayPort, &ShowBubbleMessage));
 	restarter->Start();
 }
@@ -280,10 +283,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			else if(lParam==WM_LBUTTONUP)
 			{
 				wostringstream strm;
+				wstring tab = L"  ";
 				strm<<L"IPv4 connection testing address: \r\n"
-					<<mbstowcs(curSetting.defGatewayAddr)
+					<<tab<<mbstowcs(curSetting.defGatewayAddr)
 					<<L", port = "<<curSetting.defGatewayPort<<L"\r\n"
-					<<L"H3C User: \r\nH3C service restarts at:\r\n";
+					<<L"H3C User: \r\nH3C service restarts at:\r\n"
+					<<L"Network adapter: \r\n"
+					<<L"Checking interval: "<<curSetting.chkInterval<<L"\r\n";
 				ShowBubbleMessage(strm.str(), L"iH3C当前设定");
 			}
 		}
@@ -302,7 +308,11 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 	case WM_INITDIALOG:
-		return (INT_PTR)TRUE;
+		{
+			wstring s = L"H3CWatcher, version " VERSION;
+			::SetDlgItemTextW( hDlg, IDC_PRODUCT_NAME, s.c_str());
+			return (INT_PTR)TRUE;
+		}
 
 	case WM_COMMAND:
 		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)

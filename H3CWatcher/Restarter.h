@@ -43,17 +43,12 @@ public:
 		if(onMessage)
 			onMessage(msg, L"H3C正在重连");
 		ServiceController sc;
-		if(!sc.Initialize())
-		{
-			if(onMessage)
-				onMessage(L"无法取得对服务的控制权。请尝试以管理员的身份运行此程序。",
-					L"程序权限不足");
-			return;
-		}
 		if(!sc.RestartService(L"MyH3C"))
 		{
 			if(onMessage)
-				onMessage(L"在重新启动MyH3C服务的过程中出现错误。",
+				onMessage(L"在重新启动MyH3C服务的过程中出现错误。可能是：\r\n"
+				L"  > 无法取得对服务的控制权。请尝试以管理员的身份运行此程序。\r\n"
+				L"  > 还未成功安装MyH3C服务。请以管理员的身份运行一次h3c_svr.exe。\r\n",
 					L"无法重启MyH3C服务");
 		}
 	}

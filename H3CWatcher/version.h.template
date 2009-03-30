@@ -1,0 +1,20 @@
+#pragma once
+
+
+//The version format is: major.minor.build.revision
+#define VERSION L"0.0.1.$WCREV$"
+
+/*
+#define VERSION_MAJOR 0
+#define VERSION_MINOR 0
+#define VERSION_BUILD 1
+#define VERSION_REVISION $WCREV$
+
+#if $WCMIXED?true:false$
+#warning Mixed update revisions founded. If you want to generate a release execution, plz commit and update to remove this warning.
+#endif
+
+#if $WCMODS?true:false$
+#warning Local modification founded. If you want to generate a release execution, plz commit and update to remove this warning.
+#endif
+*/
