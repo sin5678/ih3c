@@ -25,6 +25,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				Description="Auto generating version.h ..."
+				CommandLine="&quot;SubWCRev.exe&quot; $(SolutionDir).. $(ProjectDir)version.h.template $(ProjectDir)version.h -f "
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -100,6 +102,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				Description="Auto generating version.h ..."
+				CommandLine="&quot;SubWCRev.exe&quot; $(SolutionDir).. $(ProjectDir)version.h.template $(ProjectDir)version.h -f "
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -270,6 +274,18 @@
 			</File>
 			<File
 				RelativePath=".\string_utils.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="AutoVersioning"
+			>
+			<File
+				RelativePath=".\version.h"
+				>
+			</File>
+			<File
+				RelativePath=".\version.h.template"
 				>
 			</File>
 		</Filter>

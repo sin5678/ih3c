@@ -96,13 +96,13 @@ CAPTION "关于 H3CWatcher"
 FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDI_H3CWATCHER,IDC_STATIC,14,14,20,20
-    LTEXT           "H3CWatcher，0.0.1 版",IDC_STATIC,42,14,114,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) 2009",IDC_STATIC,42,114,114,8
+    LTEXT           "H3CWatcher",IDC_PRODUCT_NAME,42,14,114,8,SS_NOPREFIX
     DEFPUSHBUTTON   "确定",IDOK,114,130,50,14,WS_GROUP
     LTEXT           "http://code.google.com/p/ih3c/",IDC_STATIC,42,94,114,8,SS_NOPREFIX
     LTEXT           "中山大学05级 计算机科学与技术",IDC_STATIC,42,34,114,8,SS_NOPREFIX
     LTEXT           "杨潇:yangxiaogreetings@gmail.com",IDC_STATIC,42,54,114,8,SS_NOPREFIX
     LTEXT           "胡杨:coolcute@gmail.com",IDC_STATIC,42,74,114,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2009",IDC_STATIC,42,114,114,8
 END
 
 

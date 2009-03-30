@@ -2,7 +2,11 @@
 // Microsoft Visual C++ generated include file.
 // Used by H3CWatcher.rc
 //
+#define VERSION_MAJOR                   0
+#define VERSION_MINOR                   0
+#define VERSION_BUILD                   1
 #define IDC_MYICON                      2
+#define VERSION_REVISION                9
 #define IDD_H3CWATCHER_DIALOG           102
 #define IDS_APP_TITLE                   103
 #define IDD_ABOUTBOX                    103
@@ -12,6 +16,7 @@
 #define IDC_H3CWATCHER                  109
 #define IDR_MAINFRAME                   128
 #define IDR_POPUPMENU                   129
+#define IDC_PRODUCT_NAME                1000
 #define ID_POPUPMENU_RESTART_MYH3C      32772
 #define ID_POPUPMENU_DISABLE_CUR_ADAPTER 32778
 #define ID_POPUPMENU_ENABLE_CUR_ADAPTER 32779
@@ -29,7 +34,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        130
 #define _APS_NEXT_COMMAND_VALUE         32789
-#define _APS_NEXT_CONTROL_VALUE         1000
+#define _APS_NEXT_CONTROL_VALUE         1001
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif
