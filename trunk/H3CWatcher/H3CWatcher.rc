@@ -158,6 +158,46 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// Version
+//
+
+#include "version.h"
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION VERSION_RC
+ PRODUCTVERSION VERSION_RC
+ FILEFLAGSMASK 0x17L
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080404b0"
+        BEGIN
+            VALUE "FileDescription", "H3CWatcher, iH3C断线自动重连工具"
+            VALUE "FileVersion", VERSION_ANSI
+            VALUE "InternalName", "H3CWatcher"
+            VALUE "LegalCopyright", "Copyright (C) 2009 杨潇，胡杨"
+            VALUE "OriginalFilename", "H3CWatch.exe"
+            VALUE "ProductName", "H3CWatcher"
+            VALUE "ProductVersion", VERSION_ANSI
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // String Table
 //
 
