@@ -16,6 +16,7 @@
 #include <sstream>
 #include "string_utils.h"
 #include "version.h"
+#include "FunctionMenu.h"
 
 #define MAX_LOADSTRING 100
 
@@ -29,19 +30,15 @@ const UINT WM_NOTIFYICON = WM_USER+111;
 const DWORD MY_TRAY_ICON_ID = 1;
 HICON appIcon = NULL;
 HMENU popupMenu = NULL;
+HWND hMainWnd = NULL;
 
 mutex showMsgMtx;
 
 void ShowBubbleMessage(const wstring& message, const wstring& title);
 auto_ptr<Restarter> restarter;
-struct Settings
-{
-	NetworkInfo::AdpaterIdentifier aid;
-	string defGatewayAddr;
-	int defGatewayPort;
-	time_duration chkInterval;
-};
 Settings curSetting;
+
+auto_ptr<FunctionMenu> menu;
 
 //读入设置。
 void LoadSettings()
@@ -164,6 +161,11 @@ void CopyStringIntoArray(const basic_string<T>& s, ArrayT& buff)
 	memcpy(buff, s.c_str(), std::min(ArrayElementCount(buff), s.size()+1)*sizeof(T));
 }
 
+void ShowAbout()
+{
+	DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hMainWnd, About);
+}
+
 //
 //   函数: InitInstance(HINSTANCE, int)
 //
@@ -188,6 +190,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
       return FALSE;
    }
 
+   hMainWnd = hWnd;
+
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
@@ -205,6 +209,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 	LoadSettings();
 	LaunchRestarter();
+
+	//初始化菜单。
+	menu.reset( new FunctionMenu(hWnd, restarter.get(), &curSetting, &ShowAbout ) );
 
    return TRUE;
 }
@@ -230,37 +237,13 @@ void ShowBubbleMessage(const wstring& message, const wstring& title)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	int wmId, wmEvent;
 	PAINTSTRUCT ps;
 	HDC hdc;
 
 	switch (message)
 	{
-	case WM_COMMAND:
-		wmId    = LOWORD(wParam);
-		wmEvent = HIWORD(wParam);
-		// 分析菜单选择:
-		switch (wmId)
-		{
-		case IDM_ABOUT:
-			DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-			break;
-		case IDM_EXIT:
-			DestroyWindow(hWnd);
-			break;
-		case ID_POPUPMENU_EXIT:
-			if ( MessageBox( hWnd, L"确定要退出吗？退出之后将失去断线重连功能。", L"iH3C退出确认",
-				MB_ICONQUESTION|MB_OKCANCEL ) == IDOK )
-			{
-				SendMessage(hWnd, WM_CLOSE, 0, 0);
-			}
-			break;
-		case ID_POPUPMENU_RESTART_MYH3C:
-			restarter->TryRestart();
-			break;
-		default:
-			return DefWindowProc(hWnd, message, wParam, lParam);
-		}
+	case WM_MENUCOMMAND:
+		Menu::onWM_MENUCOMMAND(wParam, lParam);
 		break;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
@@ -275,10 +258,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			if(lParam==WM_RBUTTONUP)
 			{
-				SetForegroundWindow(hWnd);
-				POINT pt = {0};
-				GetCursorPos(&pt);
-				TrackPopupMenu(popupMenu, TPM_LEFTALIGN, pt.x, pt.y, 0, hWnd, NULL);
+				if(menu.get())
+				{
+					SetForegroundWindow(hWnd);
+					POINT pt = {0};
+					GetCursorPos(&pt);
+					TrackPopupMenu(*menu, TPM_LEFTALIGN, pt.x, pt.y, 0, hWnd, NULL);
+				}
 			}
 			else if(lParam==WM_LBUTTONUP)
 			{

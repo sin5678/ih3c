@@ -289,6 +289,22 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Menu"
+			>
+			<File
+				RelativePath=".\FunctionMenu.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Menu.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Menu.h"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>
