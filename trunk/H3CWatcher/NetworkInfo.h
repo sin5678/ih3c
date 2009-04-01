@@ -15,9 +15,12 @@ public:
 
 	//adpaterPos: 传递给服务、写入pw.data中的“第几个网卡”。
 	static void EnumerateAdapters(
-		function<void(AdpaterIdentifier/*id*/, int /*adpaterPos*/, const wstring&/*name*/)>& onGotAdapter )
+		const function<void(const AdpaterIdentifier&/*id*/, int /*adapterPos*/, const wstring&/*name*/)>& onGotAdapter )
 	{
 		//TODO: implement this
+		onGotAdapter(1, 1, L"Test 1");
+		onGotAdapter(2, 2, L"Test 2");
+		onGotAdapter(3, 3, L"Test 3");
 	}
 
 	static string GetGatewayAddress( const AdpaterIdentifier& adapterId )
@@ -26,12 +29,7 @@ public:
 		return "";
 	}
 
-	static void DisableConnection( const AdpaterIdentifier& adapterId )
-	{
-		//TODO: implement this
-	}
-	
-	static void EnableConnection( const AdpaterIdentifier& adapterId )
+	static void EnableConnection( const AdpaterIdentifier& adapterId, bool enabled )
 	{
 		//TODO: implement this
 	}
