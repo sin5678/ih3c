@@ -19,6 +19,11 @@ Menu::~Menu()
 	::DestroyMenu(hMenu);
 }
 
+BOOL Menu::CheckRadioItem( UINT pos )
+{
+	return ::CheckMenuRadioItem( hMenu, 0, ::GetMenuItemCount(hMenu)-1, pos, MF_BYPOSITION );
+}
+
 BOOL Menu::Insert(UINT pos, MenuItem* pInfo)
 {
 	cmdFuncs.insert(cmdFuncs.begin()+pos, pInfo->onCmd);

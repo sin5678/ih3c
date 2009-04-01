@@ -40,16 +40,34 @@ Settings curSetting;
 
 auto_ptr<FunctionMenu> menu;
 
+AdapterMap adapterInfos;
+
+void OnGotAdapter(const NetworkInfo::AdpaterIdentifier& id, int adapterPos, const wstring& name)
+{
+	adapterInfos[id] = AdapterInfo(adapterPos, name);
+}
+
 //读入设置。
 void LoadSettings()
 {
 	curSetting.defGatewayAddr = "172.18.59.254";
 	curSetting.defGatewayPort = 80;
 	curSetting.chkInterval = seconds(5);
+	//TODO: 
+	curSetting.adapterId = 1;
+
+	//获得网卡列表。
+	adapterInfos.clear();
+	NetworkInfo::EnumerateAdapters(&OnGotAdapter);
 }
 
 void SaveSettings()
 {
+}
+
+void ChangeSettingsAndRestart(const Settings& s)
+{
+	//TODO:
 }
 
 //根据设置重启restarter。在程序开始时、以及设置变更时调用。
@@ -211,7 +229,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	LaunchRestarter();
 
 	//初始化菜单。
-	menu.reset( new FunctionMenu(hWnd, restarter.get(), &curSetting, &ShowAbout ) );
+	menu.reset( new FunctionMenu(hWnd, restarter.get(), &curSetting, &ShowAbout, adapterInfos ) );
 
    return TRUE;
 }

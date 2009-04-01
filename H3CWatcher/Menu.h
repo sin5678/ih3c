@@ -53,13 +53,14 @@ public:
 public:
 	Menu(bool isPopup);
 	~Menu();
-	BOOL Append(MenuItem* pInfo);
-	BOOL Insert(UINT pos, MenuItem* pInfo);
-	BOOL Remove(UINT pos);
-	BOOL Modify(UINT pos, MenuItem* pInfo);
-	static Menu* FromHMENU(HMENU hMenu);
+	BOOL Append( MenuItem* pInfo );
+	BOOL Insert( UINT pos, MenuItem* pInfo );
+	BOOL Remove( UINT pos );
+	BOOL Modify( UINT pos, MenuItem* pInfo );
+	BOOL CheckRadioItem( UINT pos );
+	static Menu* FromHMENU( HMENU hMenu );
 public:
 	operator HMENU() const{return hMenu;}
 public:
-	static void onWM_MENUCOMMAND(WPARAM wParam, LPARAM lParam);
+	static void onWM_MENUCOMMAND( WPARAM wParam, LPARAM lParam );
 };

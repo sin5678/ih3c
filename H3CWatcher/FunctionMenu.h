@@ -2,6 +2,7 @@
 #include "Menu.h"
 #include "H3CWatcher.h"
 #include "NetworkInfo.h"
+#include <sstream>
 
 class FunctionMenu : public Menu
 {
@@ -12,7 +13,7 @@ class FunctionMenu : public Menu
 	Restarter* restarter;
 public:
 	FunctionMenu(HWND hMainWnd_, Restarter* restarter_, Settings* setting_,
-		const MenuItem::CmdFunc& onAbout_)
+		const MenuItem::CmdFunc& onAbout_, const AdapterMap& adapters)
 		:Menu(true), selAdptMenu(true), setting(setting_), hMainWnd(hMainWnd_),
 		onAbout(onAbout_), restarter(restarter_)
 	{
@@ -27,7 +28,26 @@ public:
 		Append( &MenuSaperator() );
 		Append( &MenuItem( L"退出(&X)", bind( &FunctionMenu::Exit, this ) ) );
 
-		//TODO:枚举网卡并动态生成菜单。
+		//枚举网卡并动态生成菜单。
+		UINT pos = 0;
+		for(AdapterMap::const_iterator iter = adapters.begin(), end=adapters.end();
+			iter!=end; iter++, pos++)
+		{
+			wostringstream strm;
+			strm<<L"("<<iter->second.adapterPos<<L") "<<iter->second.name;
+			selAdptMenu.Append( &MenuItem( const_cast<wchar_t*>( strm.str().c_str() ),
+				bind( &FunctionMenu::OnSelectAdapter, this, iter->first, pos ) ) );
+			//Check the menu item.
+			if( iter->first==setting->adapterId )
+				selAdptMenu.CheckRadioItem( pos );
+		}
+	}
+
+	void OnSelectAdapter( const NetworkInfo::AdpaterIdentifier& id, UINT pos )
+	{
+		setting->adapterId = id;
+		ChangeSettingsAndRestart( *setting );
+		selAdptMenu.CheckRadioItem( pos );
 	}
 
 	void Restart()
@@ -37,12 +57,26 @@ public:
 
 	void DisableCurConn()
 	{
-		//TODO:
+		try
+		{
+			NetworkInfo::EnableConnection( setting->adapterId, false );
+		}
+		catch(const NetworkInfo::InvalidIdentifier& err)
+		{
+			ShowErrorMessage(err.what());
+		}
 	}
 	
 	void EnableCurConn()
 	{
-		//TODO:
+		try
+		{
+			NetworkInfo::EnableConnection( setting->adapterId, true );
+		}
+		catch(const NetworkInfo::InvalidIdentifier& err)
+		{
+			ShowErrorMessage(err.what());
+		}
 	}
 
 	void Help()
@@ -57,5 +91,10 @@ public:
 		{
 			SendMessage(hMainWnd, WM_CLOSE, 0, 0);
 		}
+	}
+
+	void ShowErrorMessage(const char* msg)
+	{
+		MessageBoxA(hMainWnd, msg, "Error", MB_OK|MB_ICONERROR);
 	}
 };
