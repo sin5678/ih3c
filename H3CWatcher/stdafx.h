@@ -24,6 +24,8 @@
 #include <boost/function.hpp>
 #include <boost/thread.hpp>
 #include <string>
+#include <memory>
+#include <boost/smart_ptr.hpp>
 
 using namespace boost::posix_time;
 using namespace boost::asio;
