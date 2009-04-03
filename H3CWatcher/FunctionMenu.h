@@ -59,7 +59,7 @@ public:
 	{
 		try
 		{
-			NetworkInfo::EnableConnection( setting->adapterId, false );
+			NetworkInfo::SetConnection( setting->adapterId, false );
 		}
 		catch(const NetworkInfo::InvalidIdentifier& err)
 		{
@@ -71,7 +71,7 @@ public:
 	{
 		try
 		{
-			NetworkInfo::EnableConnection( setting->adapterId, true );
+			NetworkInfo::SetConnection( setting->adapterId, true );
 		}
 		catch(const NetworkInfo::InvalidIdentifier& err)
 		{

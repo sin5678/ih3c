@@ -63,6 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="iphlpapi.lib setupapi.lib"
 				OutputFile="$(SolutionDir)bin/Debug/$(ProjectName).exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
@@ -140,6 +141,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="iphlpapi.lib setupapi.lib"
 				OutputFile="$(SolutionDir)bin/Release/$(ProjectName).exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
@@ -260,6 +262,10 @@
 		<Filter
 			Name="NetworkInfo"
 			>
+			<File
+				RelativePath=".\NetworkInfo.cpp"
+				>
+			</File>
 			<File
 				RelativePath=".\NetworkInfo.h"
 				>
