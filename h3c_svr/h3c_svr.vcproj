@@ -92,6 +92,7 @@
 				GenerateManifest="true"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames=""
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Release\$(ProjectName).pdb"
 				GenerateMapFile="false"
 				SubSystem="0"

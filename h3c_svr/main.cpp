@@ -211,6 +211,8 @@ void SvcInstall()
 
 bool InstallService ()
 {
+	std::cout<<"Installing iH3C Svr.\n";
+
 	SvcInstall();
 
 	return true;
@@ -218,6 +220,8 @@ bool InstallService ()
 
 bool UnInstallService ()
 {
+	std::cout<<"Uninstalling iH3C Svr.\n";
+
 	SC_HANDLE schSCManager;
 	SC_HANDLE schService;
 
@@ -262,7 +266,7 @@ bool UnInstallService ()
 	return true;
 }
 
-bool StartService ()
+bool StartMyService ()
 {
 	SERVICE_TABLE_ENTRY ServiceTable[2];
 	ServiceTable[0].lpServiceName = SVCNAME;
@@ -428,12 +432,12 @@ int main( int argc, char* argv[])
 	switch (argc)
 	{
 	case 1:
-		StartService();
+		StartMyService();
 		break;
 
 	case 2:
 		{
-			std::string argu = argv[1];
+			std::string argu(argv[1]);
 			if (argu == "-i")
 				InstallService();
 			else if (argu == "-u")
@@ -456,6 +460,6 @@ int main( int argc, char* argv[])
 		break;
 	}
 
-	return 0;
+	return EXIT_SUCCESS;
 }
 

@@ -320,7 +320,7 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_INITDIALOG:
 		{
-			wstring s = L"H3CWatcher, version " VERSION;
+			wstring s = L"iH3CWatcher, version " VERSION;
 			::SetDlgItemTextW( hDlg, IDC_PRODUCT_NAME, s.c_str());
 			return (INT_PTR)TRUE;
 		}
