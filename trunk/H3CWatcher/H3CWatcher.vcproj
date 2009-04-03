@@ -124,7 +124,7 @@
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
-				RuntimeLibrary="0"
+				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
