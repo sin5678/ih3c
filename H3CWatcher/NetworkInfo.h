@@ -1,16 +1,21 @@
 #pragma once
-#include "stdafx.h"
+
 #include <exception>
 
 //Get network infos.
 class NetworkInfo
 {
 public:
-	typedef std::string AdpaterIdentifier;		//TODO: replace int with actual adpater identifier
+	typedef std::wstring AdpaterIdentifier;
 
 	class InvalidIdentifier : public runtime_error{
 	public:
 		InvalidIdentifier(const char* msg):runtime_error(msg){}
+	};
+
+	class ComError : public runtime_error{
+	public:
+		ComError(const char* msg):runtime_error(msg){}
 	};
 
 	//adpaterPos: 传递给服务、写入pw.data中的“第几个网卡”。

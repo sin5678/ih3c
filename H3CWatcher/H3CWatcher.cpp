@@ -9,14 +9,15 @@
 
 #include "stdafx.h"
 #include "H3CWatcher.h"
-#include <shellapi.h>
-#pragma comment(lib, "shell32.lib")
 #include "Restarter.h"
 #include "NetworkInfo.h"
-#include <sstream>
 #include "string_utils.h"
 #include "version.h"
 #include "FunctionMenu.h"
+
+#include <sstream>
+#include <shellapi.h>
+#include <ObjBase.h>
 
 #define MAX_LOADSTRING 100
 
@@ -92,6 +93,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
+	//Initialize  COM 
+	CoInitialize(NULL); 
+
 	appIcon = (HICON)LoadImage( hInstance,
             MAKEINTRESOURCE(IDI_H3CWATCHER),
             IMAGE_ICON,
@@ -127,6 +131,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 			DispatchMessage(&msg);
 		}
 	}
+
+	//uninit
+	CoUninitialize(); 
 
 	return (int) msg.wParam;
 }
