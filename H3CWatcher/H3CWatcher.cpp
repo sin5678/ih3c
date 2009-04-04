@@ -16,6 +16,7 @@
 #include "FunctionMenu.h"
 
 #include <sstream>
+#include <fstream>
 #include <shellapi.h>
 #include <ObjBase.h>
 
@@ -48,35 +49,169 @@ void OnGotAdapter(const NetworkInfo::AdpaterIdentifier& id, int adapterPos, cons
 	adapterInfos[id] = AdapterInfo(adapterPos, name);
 }
 
+//Not includes terminating '\\' or '/'.
+wstring GetExePath()
+{
+	wstring s;
+	size_t size = 10240;
+	s.resize(size);
+	::GetModuleFileName(NULL, &(s[0]), size);
+	wstring result = &(s[0]);
+	return result.substr( 0, result.find_last_of( L"\\/" ) );
+}
+
+const wstring PWDATA_PATHNAME = GetExePath()+L"\\pw.data";
+const wstring WATCHER_SETTING_PATHNAME = GetExePath()+L"\\setting.data";
+
+void SaveSettings()
+{
+	//string user = "user", pass = "pass";
+	//ifstream istrm( PWDATA_PATHNAME );
+	//if ( istrm )
+	//{
+	//	getline( istrm, user );
+	//	getline( istrm, pass );
+	//}
+
+	//ofstream ostrm( PWDATA_PATHNAME, ios::out|ios::binary );
+	//const char * crlf = "\r\n";
+	//if ( ostrm )
+	//{
+	//	ostrm << user << crlf << pass << crlf << curSetting <<crlf;
+	//	ostrm.close();
+	//}
+	//else
+	//{
+	//	MessageBox( NULL, L"无法保存设置到pw.data。", L"提示", MB_OK|MB_ICONINFORMATION );
+	//}
+
+	const wchar_t * crlf = L"\r\n";
+	wofstream wostrm( WATCHER_SETTING_PATHNAME.c_str(), ios::out|ios::binary );
+	if ( wostrm )
+	{
+		wostrm << curSetting.adapterId << crlf 
+			<< mbstowcs( curSetting.defGatewayAddr ) << crlf
+			<< curSetting.defGatewayPort << crlf;
+		wostrm.close();
+	}
+	else
+	{
+		MessageBox( NULL, L"无法保存设置到setting.data。", L"提示", MB_OK|MB_ICONINFORMATION );
+	}
+}
+
 //读入设置。
 void LoadSettings()
 {
+	// default values
 	curSetting.defGatewayAddr = "172.18.59.254";
 	curSetting.defGatewayPort = 80;
 	curSetting.chkInterval = seconds(5);
-	//TODO: 
-	curSetting.adapterId = 1;
+	//curSetting.adapterPos = 1;
+
+	//{
+	//	string user, pass, adpaterPos;
+	//	ifstream strm( PWDATA_PATHNAME );
+	//	if ( strm )
+	//	{
+	//		getline( strm, user );
+	//		getline( strm, pass );
+	//		strm >> curSetting.adapterPos;
+	//		if ( strm.rdstate() & (ios::failbit|ios::badbit) )
+	//		{
+	//			MessageBox( NULL, L"pw.data格式错误。\r\n请重新设定用户名、密码并重启程序。", L"提示", MB_OK|MB_ICONINFORMATION );
+	//			exit( 1 );
+	//		}
+	//		strm.close();
+	//	}
+	//}
+	{
+		wstring gateway;
+		wifstream strm( WATCHER_SETTING_PATHNAME.c_str() );
+		if ( strm )
+		{
+			strm >> curSetting.adapterId >> gateway >> curSetting.defGatewayPort;
+			if ( strm.rdstate() & (ios::failbit|ios::badbit) )
+			{
+				SaveSettings();
+			}
+			else
+			{
+				curSetting.defGatewayAddr = wcstombs(gateway);
+			}
+			strm.close();
+		}
+	}
 
 	//获得网卡列表。
 	adapterInfos.clear();
 	NetworkInfo::EnumerateAdapters(&OnGotAdapter);
-}
-
-void SaveSettings()
-{
-}
-
-void ChangeSettingsAndRestart(const Settings& s)
-{
-	//TODO:
+	if ( !adapterInfos.empty() && adapterInfos.find( curSetting.adapterId ) == adapterInfos.end() )
+	{
+		curSetting.adapterId = adapterInfos.begin()->first;
+		SaveSettings();
+	}
 }
 
 //根据设置重启restarter。在程序开始时、以及设置变更时调用。
 void LaunchRestarter()
 {
+	string addr;
+	try
+	{
+		addr = NetworkInfo::GetGatewayAddress( curSetting.adapterId );
+	}
+	catch ( const runtime_error& )
+	{
+	}
+	if ( !addr.empty() && curSetting.defGatewayAddr!=addr )
+	{
+		curSetting.defGatewayAddr = addr;
+		SaveSettings();
+	}
 	restarter.reset(new Restarter(curSetting.chkInterval, curSetting.defGatewayAddr,
 		curSetting.defGatewayPort, &ShowBubbleMessage));
 	restarter->Start();
+}
+
+void ChangeSettingsAndRestart(const Settings& s)
+{
+	curSetting = s;
+	SaveSettings();
+	LaunchRestarter();
+}
+
+const wchar_t* IH3C_REG_NAME = L"iH3C";
+const wchar_t* REG_STARTUP_KEY = L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
+
+bool RegisterStartUp()
+{
+	HKEY hkey;
+	wstring path = GetExePath();
+
+	if ( ERROR_SUCCESS == RegOpenKeyEx(HKEY_LOCAL_MACHINE, 
+		REG_STARTUP_KEY, 0, KEY_ALL_ACCESS, &hkey ) )
+	{
+		LONG ret = RegSetValueEx( hkey, IH3C_REG_NAME, 0, REG_SZ, (BYTE*)path.c_str(),
+			(path.size()+1)*sizeof(path[0]) );
+		RegCloseKey(hkey);
+		return ERROR_SUCCESS == ERROR_SUCCESS;
+	}
+	return false;
+}
+
+bool UnregisterStartUp()
+{
+	HKEY hkey;
+
+	if ( ERROR_SUCCESS == RegOpenKeyEx(HKEY_LOCAL_MACHINE, 
+		REG_STARTUP_KEY, 0, KEY_ALL_ACCESS, &hkey ) )
+	{
+		LONG ret = RegDeleteValue( hkey, IH3C_REG_NAME );
+		RegCloseKey(hkey);
+		return ERROR_SUCCESS == ERROR_SUCCESS;
+	}
+	return false;
 }
 
 // 此代码模块中包含的函数的前向声明:
@@ -91,7 +226,26 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                      int       nCmdShow)
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
-	UNREFERENCED_PARAMETER(lpCmdLine);
+
+	if ( lpCmdLine[0]!=0 )
+	{
+		wstring cmdLine = lpCmdLine;
+		if ( L"-i"==cmdLine )
+		{
+			return RegisterStartUp()?0:1;
+		}
+		else if( L"-u"==cmdLine )
+		{
+			return UnregisterStartUp()?0:1;
+		}
+		else
+		{
+			MessageBox(NULL, L"Usage: H3CWatcher [ -i | -u ]\r\n"
+				L"  -i : Register as start-up application\r\n"
+				L"  -u : Start-up application unregister\r\n"
+				, L"CmdLine", MB_OK);
+		}
+	}
 
 	//Initialize  COM 
 	CoInitialize(NULL); 
@@ -250,6 +404,19 @@ void ShowBubbleMessage(const wstring& message, const wstring& title)
 	Shell_NotifyIcon(NIM_MODIFY, &nid);
 }
 
+void ShowCurSetting()
+{
+	wostringstream strm;
+	wstring tab = L"  ";
+	strm<<L"IPv4 connection testing address: \r\n"
+		<<tab<<mbstowcs(curSetting.defGatewayAddr)
+		<<L", port = "<<curSetting.defGatewayPort<<L"\r\n"
+		<<L"H3C User: \r\nH3C service restarts at:\r\n"
+		<<L"Network adapter: \r\n"
+		<<L"Checking interval: "<<curSetting.chkInterval<<L"\r\n";
+	ShowBubbleMessage(strm.str(), L"iH3C当前设定");
+}
+
 //
 //  函数: WndProc(HWND, UINT, WPARAM, LPARAM)
 //
@@ -293,15 +460,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			else if(lParam==WM_LBUTTONUP)
 			{
-				wostringstream strm;
-				wstring tab = L"  ";
-				strm<<L"IPv4 connection testing address: \r\n"
-					<<tab<<mbstowcs(curSetting.defGatewayAddr)
-					<<L", port = "<<curSetting.defGatewayPort<<L"\r\n"
-					<<L"H3C User: \r\nH3C service restarts at:\r\n"
-					<<L"Network adapter: \r\n"
-					<<L"Checking interval: "<<curSetting.chkInterval<<L"\r\n";
-				ShowBubbleMessage(strm.str(), L"iH3C当前设定");
+				ShowCurSetting();
 			}
 		}
 		break;

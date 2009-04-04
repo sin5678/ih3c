@@ -45,9 +45,12 @@ public:
 
 	void OnSelectAdapter( const NetworkInfo::AdpaterIdentifier& id, UINT pos )
 	{
-		setting->adapterId = id;
-		ChangeSettingsAndRestart( *setting );
-		selAdptMenu.CheckRadioItem( pos );
+		if ( setting->adapterId!=id )
+		{
+			setting->adapterId = id;
+			ChangeSettingsAndRestart( *setting );
+			selAdptMenu.CheckRadioItem( pos );
+		}
 	}
 
 	void Restart()
