@@ -5,7 +5,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "H3CWatcher", "..\H3CWatcher
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "h3c_svr", "..\h3c_svr\h3c_svr.vcproj", "{EE932589-81AC-4E7C-98EC-504E41041D81}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{43F08991-63CA-449E-9D84-415648889473}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "iH3CSetup", "Setup\Setup.vdproj", "{43F08991-63CA-449E-9D84-415648889473}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UrlOpen", "..\UrlOpen\UrlOpen.vcproj", "{A317889A-74D9-46F6-8DC7-1568F6779084}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +25,10 @@ Global
 		{EE932589-81AC-4E7C-98EC-504E41041D81}.Release|Win32.Build.0 = Release|Win32
 		{43F08991-63CA-449E-9D84-415648889473}.Debug|Win32.ActiveCfg = Debug
 		{43F08991-63CA-449E-9D84-415648889473}.Release|Win32.ActiveCfg = Release
+		{A317889A-74D9-46F6-8DC7-1568F6779084}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A317889A-74D9-46F6-8DC7-1568F6779084}.Debug|Win32.Build.0 = Debug|Win32
+		{A317889A-74D9-46F6-8DC7-1568F6779084}.Release|Win32.ActiveCfg = Release|Win32
+		{A317889A-74D9-46F6-8DC7-1568F6779084}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
