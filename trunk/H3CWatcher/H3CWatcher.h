@@ -10,6 +10,7 @@ struct Settings
 	NetworkInfo::AdpaterIdentifier adapterId;
 	string defGatewayAddr;
 	int defGatewayPort;
+	//int adapterPos;
 	time_duration chkInterval;
 };
 
