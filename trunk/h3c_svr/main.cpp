@@ -202,7 +202,7 @@ void SvcInstall()
 	else utils::MyH3CError(L"message: Service installed successfully"); 
 
 	SERVICE_DESCRIPTION dpt = {0};
-	dpt.lpDescription = "H3c DIY 客户端,编写人:胡杨,杨潇 (05CSB)";
+	dpt.lpDescription = "iH3C 客户端核心认证服务,编写人:胡杨,杨潇 (05CSB)";
 	ChangeServiceConfig2 (schService, SERVICE_CONFIG_DESCRIPTION, &dpt);
 
 	CloseServiceHandle(schService); 

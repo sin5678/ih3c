@@ -61,9 +61,11 @@ IDI_ICON                ICON                    "app.ico"
 // Version
 //
 
+#include "version.h"
+
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,1
- PRODUCTVERSION 1,0,0,1
+ FILEVERSION VERSION_RC
+ PRODUCTVERSION VERSION_RC
  FILEFLAGSMASK 0x37L
 #ifdef _DEBUG
  FILEFLAGS 0x21L
@@ -80,13 +82,13 @@ BEGIN
         BEGIN
             VALUE "Comments", "作者:胡杨,杨潇"
             VALUE "CompanyName", "05CSB"
-            VALUE "FileDescription", "MyH3C 认证客户端"
-            VALUE "FileVersion", "1, 0, 0, 1"
-            VALUE "InternalName", "MyH3C"
+            VALUE "FileDescription", "iH3C 客户端核心认证服务"
+            VALUE "FileVersion", VERSION_ANSI
+            VALUE "InternalName", "iH3C"
             VALUE "LegalCopyright", "Copyright (C) 2009 05CSB"
-            VALUE "OriginalFilename", "MyH3C.exe"
-            VALUE "ProductName", "MyH3C 应用程序"
-            VALUE "ProductVersion", "1, 0, 0, 1"
+            VALUE "OriginalFilename", "iH3C_svr.exe"
+            VALUE "ProductName", "iH3C 服务程序"
+            VALUE "ProductVersion", VERSION_ANSI
             VALUE "SpecialBuild", "True"
         END
     END
