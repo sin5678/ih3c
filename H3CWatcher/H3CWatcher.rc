@@ -92,11 +92,11 @@ END
 
 IDD_ABOUTBOX DIALOGEX 0, 0, 171, 151
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "关于 H3CWatcher"
+CAPTION "关于 iH3CWatcher"
 FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDI_H3CWATCHER,IDC_STATIC,14,14,20,20
-    LTEXT           "H3CWatcher",IDC_PRODUCT_NAME,42,14,114,8,SS_NOPREFIX
+    LTEXT           "iH3CWatcher",IDC_PRODUCT_NAME,42,14,114,8,SS_NOPREFIX
     DEFPUSHBUTTON   "确定",IDOK,114,130,50,14,WS_GROUP
     LTEXT           "http://code.google.com/p/ih3c/",IDC_STATIC,42,94,114,8,SS_NOPREFIX
     LTEXT           "中山大学05级 计算机科学与技术",IDC_STATIC,42,34,114,8,SS_NOPREFIX
@@ -180,12 +180,12 @@ BEGIN
     BEGIN
         BLOCK "080404b0"
         BEGIN
-            VALUE "FileDescription", "H3CWatcher, iH3C断线自动重连工具"
+            VALUE "FileDescription", "iH3CWatcher, iH3C断线自动重连工具"
             VALUE "FileVersion", VERSION_ANSI
-            VALUE "InternalName", "H3CWatcher"
+            VALUE "InternalName", "iH3CWatcher"
             VALUE "LegalCopyright", "Copyright (C) 2009 杨潇，胡杨"
             VALUE "OriginalFilename", "H3CWatch.exe"
-            VALUE "ProductName", "H3CWatcher"
+            VALUE "ProductName", "iH3CWatcher"
             VALUE "ProductVersion", VERSION_ANSI
         END
     END

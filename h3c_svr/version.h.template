@@ -1,0 +1,7 @@
+#pragma once
+
+
+//The version format is: major.minor.build.revision
+#define VERSION L"0.1.0.$WCREV$"
+#define VERSION_ANSI "0.1.0.$WCREV$"
+#define VERSION_RC 0,1,0,$WCREV$

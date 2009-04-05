@@ -30,6 +30,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				Description="Auto generating version.h ..."
+				CommandLine="&quot;SubWCRev.exe&quot; $(SolutionDir).. $(ProjectDir)version.h.template $(ProjectDir)version.h -f "
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -142,6 +144,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				Description="Auto generating version.h ..."
+				CommandLine="&quot;SubWCRev.exe&quot; $(SolutionDir).. $(ProjectDir)version.h.template $(ProjectDir)version.h -f "
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -553,7 +557,7 @@
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 			>
 			<File
-				RelativePath=".\MyH3C.rc"
+				RelativePath=".\h3c_svr.rc"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -602,6 +606,18 @@
 			</File>
 			<File
 				RelativePath=".\pyScripts\NetWatch.py"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="AutoVersioning"
+			>
+			<File
+				RelativePath=".\version.h"
+				>
+			</File>
+			<File
+				RelativePath=".\version.h.template"
 				>
 			</File>
 		</Filter>

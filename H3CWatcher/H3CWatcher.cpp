@@ -50,18 +50,19 @@ void OnGotAdapter(const NetworkInfo::AdpaterIdentifier& id, int adapterPos, cons
 }
 
 //Not includes terminating '\\' or '/'.
-wstring GetExePath()
+wstring GetMainDirPath()
 {
-	wstring s;
+	wstring str;
 	size_t size = 10240;
-	s.resize(size);
-	::GetModuleFileName(NULL, &(s[0]), size);
-	wstring result = &(s[0]);
+	str.resize(size);
+	::GetModuleFileName(NULL, &(str[0]), size);
+	wstring result = &(str[0]);
 	return result.substr( 0, result.find_last_of( L"\\/" ) );
 }
 
-const wstring PWDATA_PATHNAME = GetExePath()+L"\\pw.data";
-const wstring WATCHER_SETTING_PATHNAME = GetExePath()+L"\\setting.data";
+const wstring PWDATA_PATHNAME = GetMainDirPath()+L"\\pw.data";
+const wstring WATCHER_SETTING_PATHNAME = GetMainDirPath()+L"\\setting.data";
+const wstring WATCHER_PATHNAME = GetMainDirPath()+L"\\H3CWatcher.exe";
 
 void SaveSettings()
 {
@@ -187,7 +188,7 @@ const wchar_t* REG_STARTUP_KEY = L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\
 bool RegisterStartUp()
 {
 	HKEY hkey;
-	wstring path = GetExePath();
+	wstring path = WATCHER_PATHNAME;
 
 	if ( ERROR_SUCCESS == RegOpenKeyEx(HKEY_LOCAL_MACHINE, 
 		REG_STARTUP_KEY, 0, KEY_ALL_ACCESS, &hkey ) )
