@@ -66,26 +66,6 @@ const wstring WATCHER_PATHNAME = GetMainDirPath()+L"\\H3CWatcher.exe";
 
 void SaveSettings()
 {
-	//string user = "user", pass = "pass";
-	//ifstream istrm( PWDATA_PATHNAME );
-	//if ( istrm )
-	//{
-	//	getline( istrm, user );
-	//	getline( istrm, pass );
-	//}
-
-	//ofstream ostrm( PWDATA_PATHNAME, ios::out|ios::binary );
-	//const char * crlf = "\r\n";
-	//if ( ostrm )
-	//{
-	//	ostrm << user << crlf << pass << crlf << curSetting <<crlf;
-	//	ostrm.close();
-	//}
-	//else
-	//{
-	//	MessageBox( NULL, L"无法保存设置到pw.data。", L"提示", MB_OK|MB_ICONINFORMATION );
-	//}
-
 	const wchar_t * crlf = L"\r\n";
 	wofstream wostrm( WATCHER_SETTING_PATHNAME.c_str(), ios::out|ios::binary );
 	if ( wostrm )
@@ -110,22 +90,6 @@ void LoadSettings()
 	curSetting.chkInterval = seconds(5);
 	//curSetting.adapterPos = 1;
 
-	//{
-	//	string user, pass, adpaterPos;
-	//	ifstream strm( PWDATA_PATHNAME );
-	//	if ( strm )
-	//	{
-	//		getline( strm, user );
-	//		getline( strm, pass );
-	//		strm >> curSetting.adapterPos;
-	//		if ( strm.rdstate() & (ios::failbit|ios::badbit) )
-	//		{
-	//			MessageBox( NULL, L"pw.data格式错误。\r\n请重新设定用户名、密码并重启程序。", L"提示", MB_OK|MB_ICONINFORMATION );
-	//			exit( 1 );
-	//		}
-	//		strm.close();
-	//	}
-	//}
 	{
 		wstring gateway;
 		wifstream strm( WATCHER_SETTING_PATHNAME.c_str() );
@@ -237,7 +201,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 		}
 		else if( L"-u"==cmdLine )
 		{
-			return UnregisterStartUp()?0:1;
+			return UnregisterStartUp()?0:2;
 		}
 		else
 		{
@@ -245,6 +209,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 				L"  -i : Register as start-up application\r\n"
 				L"  -u : Start-up application unregister\r\n"
 				, L"CmdLine", MB_OK);
+			return 3;
 		}
 	}
 
@@ -409,13 +374,26 @@ void ShowCurSetting()
 {
 	wostringstream strm;
 	wstring tab = L"  ";
-	strm<<L"IPv4 connection testing address: \r\n"
+	ptime restartTime = restarter->GetLastRestartTime();
+	strm<<L"IPv4连接测试地址: \r\n"
 		<<tab<<mbstowcs(curSetting.defGatewayAddr)
-		<<L", port = "<<curSetting.defGatewayPort<<L"\r\n"
-		<<L"H3C User: \r\nH3C service restarts at:\r\n"
-		<<L"Network adapter: \r\n"
-		<<L"Checking interval: "<<curSetting.chkInterval<<L"\r\n";
-	ShowBubbleMessage(strm.str(), L"iH3C当前设定");
+		<<L", 端口 = "<<curSetting.defGatewayPort<<L"\r\n"
+		//<<L"H3C User: \r\n"
+		<<L"上一次H3C服务重启时间: ";
+	if ( restartTime.is_not_a_date_time() )
+	{
+		strm<<L"无";
+	}
+	else
+	{
+		strm<<restartTime;
+	}
+	AdapterInfo &ai = adapterInfos[curSetting.adapterId];
+	strm<<L"\r\n"
+		<<L"网卡: ("<<ai.adapterPos
+		<<L")"<<ai.name<<L"\r\n"
+		<<L"网络状况检查间隔: "<<curSetting.chkInterval<<L"\r\n";
+	ShowBubbleMessage(strm.str(), L"iH3C信息");
 }
 
 //

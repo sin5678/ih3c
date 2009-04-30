@@ -22,6 +22,7 @@ protected:
 	string host;
 	int port;
 	bool lastTimeConnectable;
+	ptime restartTime;
 public:
 	Restarter(const time_duration& checkInterval_, const string& host_,
 		int port_, const MsgFunc& onMessage_)
@@ -51,6 +52,11 @@ public:
 				L"  > 还未成功安装MyH3C服务。请以管理员的身份运行h3c_svr.exe -i。\r\n",
 					L"无法重启MyH3C服务");
 		}
+	}
+
+	ptime GetLastRestartTime() const
+	{
+		return restartTime;
 	}
 
 protected:
@@ -104,7 +110,6 @@ protected:
 
 	void Check()
 	{
-		ptime restartTime;
 		while(true)
 		{
 			ConnectWithTimeout cwt;
