@@ -48,7 +48,7 @@ public:
 			if(onMessage)
 				onMessage(L"在重新启动MyH3C服务的过程中出现错误。可能是：\r\n"
 				L"  > 无法取得对服务的控制权。请尝试以管理员的身份运行此程序。\r\n"
-				L"  > 还未成功安装MyH3C服务。请以管理员的身份运行一次h3c_svr.exe。\r\n",
+				L"  > 还未成功安装MyH3C服务。请以管理员的身份运行h3c_svr.exe -i。\r\n",
 					L"无法重启MyH3C服务");
 		}
 	}
@@ -56,10 +56,7 @@ public:
 protected:
 	void RestartMyH3C(const wstring& msg)
 	{
-		lastTimeConnectable = false;
-
 		TryRestart(msg);
-		this_thread::sleep(seconds(3));
 	}
 
 	class ConnectWithTimeout
@@ -107,6 +104,7 @@ protected:
 
 	void Check()
 	{
+		ptime restartTime;
 		while(true)
 		{
 			ConnectWithTimeout cwt;
@@ -120,15 +118,18 @@ protected:
 						onMessage(L"已经成功通过H3C连接到网络。", L"网络已正常连接");
 					lastTimeConnectable = true;
 				}
+				this_thread::sleep(checkInterval);
 			}
 
 			if ( !cwt.connection_succeeded() )
 			{
-				RestartMyH3C(L"超出指定时间未能连上网关，H3C连接可能已断开。\r\nH3C正在重新连接.....");
-			}
-			else
-			{
-				this_thread::sleep(checkInterval);
+				ptime now = microsec_clock::local_time();
+				if ( lastTimeConnectable || restartTime.is_not_a_date_time() || now-restartTime>seconds(15) )
+				{
+					lastTimeConnectable = false;
+					restartTime = microsec_clock::local_time();
+					RestartMyH3C(L"超出指定时间未能连上网关，H3C连接可能已断开。\r\nH3C正在重新连接.....");
+				}
 			}
 		}
 	}
