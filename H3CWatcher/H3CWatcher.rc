@@ -180,6 +180,7 @@ BEGIN
     BEGIN
         BLOCK "080404b0"
         BEGIN
+            VALUE "CompanyName", "中山大学05级(09届)计算机B班 Nova小组"
             VALUE "FileDescription", "iH3CWatcher, iH3C断线自动重连工具"
             VALUE "FileVersion", VERSION_ANSI
             VALUE "InternalName", "iH3CWatcher"
