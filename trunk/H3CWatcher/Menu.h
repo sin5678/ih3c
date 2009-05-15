@@ -7,7 +7,7 @@
 class MenuItem : public MENUITEMINFO{
 public:
 	typedef function<void()> CmdFunc;
-	auto_ptr<CmdFunc> onCmd;
+	shared_ptr<CmdFunc> onCmd;
 public:
 	MenuItem(LPTSTR text, const CmdFunc& onCmd_, HMENU subMenu = NULL) : onCmd(new CmdFunc(onCmd_))
 	{

@@ -27,22 +27,21 @@ HINSTANCE hInst;								// 当前实例
 TCHAR szTitle[MAX_LOADSTRING];					// 标题栏文本
 TCHAR szWindowClass[MAX_LOADSTRING];			// 主窗口类名
 
-NOTIFYICONDATA nid = {0};
-const UINT WM_NOTIFYICON = WM_USER+111;
-const DWORD MY_TRAY_ICON_ID = 1;
-HICON appIcon = NULL;
-HMENU popupMenu = NULL;
-HWND hMainWnd = NULL;
+NOTIFYICONDATA	nid = {0};
+const UINT		WM_NOTIFYICON	= WM_USER+111;
+const DWORD		MY_TRAY_ICON_ID = 1;
+HICON			appIcon			= NULL;
+HMENU			popupMenu		= NULL;
+HWND			hMainWnd		= NULL;
 
-mutex showMsgMtx;
+mutex			showMsgMtx;
 
-void ShowBubbleMessage(const wstring& message, const wstring& title);
-auto_ptr<Restarter> restarter;
-Settings curSetting;
+auto_ptr<Restarter>		restarter;
+Settings				curSetting;
 
-auto_ptr<FunctionMenu> menu;
+auto_ptr<FunctionMenu>	menu;
 
-AdapterMap adapterInfos;
+AdapterMap				adapterInfos;
 
 void OnGotAdapter(const NetworkInfo::AdpaterIdentifier& id, int adapterPos, const wstring& name)
 {
@@ -118,8 +117,8 @@ void LoadSettings()
 	}
 }
 
-//根据设置重启restarter。在程序开始时、以及设置变更时调用。
-void LaunchRestarter()
+//重新从DHCP获得网关地址。
+bool UpdateConnectionTestAddr()
 {
 	string addr;
 	try
@@ -129,13 +128,39 @@ void LaunchRestarter()
 	catch ( const runtime_error& )
 	{
 	}
-	if ( !addr.empty() && curSetting.defGatewayAddr!=addr )
+	if ( !addr.empty() && addr!="0.0.0.0" && curSetting.defGatewayAddr!=addr )
 	{
 		curSetting.defGatewayAddr = addr;
 		SaveSettings();
+		return true;
 	}
+	return false;
+}
+
+void ShowBubbleMessage(const wstring& message, const wstring& title);
+
+//restarter发来消息。
+void OnRestarterMessage( RestarterMessageType type, const wstring& message, const wstring& title)
+{
+	switch ( type )
+	{
+	case RestarterMessageTypeRestarting:
+	case RestarterMessageTypeConnectionSucceeded:
+		if ( UpdateConnectionTestAddr() )
+		{
+			restarter->host = curSetting.defGatewayAddr;
+		}
+		break;
+	}
+	ShowBubbleMessage( message, title );
+}
+
+//根据设置重启restarter。在程序开始时、以及设置变更时调用。
+void LaunchRestarter()
+{
+	UpdateConnectionTestAddr();
 	restarter.reset(new Restarter(curSetting.chkInterval, curSetting.defGatewayAddr,
-		curSetting.defGatewayPort, &ShowBubbleMessage));
+		curSetting.defGatewayPort, &OnRestarterMessage));
 	restarter->Start();
 }
 
