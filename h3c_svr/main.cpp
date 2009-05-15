@@ -6,6 +6,7 @@
 #include <string>
 
 #include "utils.h"
+#include "Version.h"
 
 using namespace std;
 
@@ -310,6 +311,13 @@ void Usage()
 	std::cout<<"-i install me\n";
 	std::cout<<"-u uninstall me\n";
 	std::cout<<"-l list devices\n";
+	std::cout<<"-v show version\n";
+}
+
+void ShowVersion()
+{
+	std::cout<< "Version: \n";
+	std::cout<< VERSION;
 }
 
 int main( int argc, char* argv[])
@@ -329,6 +337,8 @@ int main( int argc, char* argv[])
 				UnInstallService();
 			else if (argu == "-l")
 				ListDevice();
+			else if (argu == "-v")
+				ShowVersion();
 			else
 				Usage();
 		}
