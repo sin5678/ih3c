@@ -11,16 +11,23 @@
 #include <memory>
 #include "ServiceController.h"
 
+enum RestarterMessageType
+{
+	RestarterMessageTypeRestarting,
+	RestarterMessageTypeNoServiceControllingRight,
+	RestarterMessageTypeConnectionSucceeded,
+};
+
 class Restarter
 {
 public:
-	typedef function<void(const wstring&, const wstring&)> MsgFunc;
+	typedef function<void(RestarterMessageType, const wstring&, const wstring&)> MsgFunc;
+	string host;
+	int port;
 protected:
 	auto_ptr<thread> pcheckthrd;
 	MsgFunc onMessage;
 	time_duration checkInterval, restartInterval;
-	string host;
-	int port;
 	bool lastTimeConnectable;
 	ptime restartTime;
 public:
@@ -42,12 +49,13 @@ public:
 	void TryRestart(const wstring& msg = L"H3C正在重新连接.....")
 	{
 		if(onMessage)
-			onMessage(msg, L"H3C正在重连");
+			onMessage( RestarterMessageTypeRestarting, msg, L"H3C正在重连");
 		ServiceController sc;
 		if(!sc.RestartService(L"MyH3C"))
 		{
 			if(onMessage)
-				onMessage(L"在重新启动MyH3C服务的过程中出现错误。可能是：\r\n"
+				onMessage( RestarterMessageTypeNoServiceControllingRight, 
+				L"在重新启动MyH3C服务的过程中出现错误。可能是：\r\n"
 				L"  > 无法取得对服务的控制权。请尝试以管理员的身份运行此程序。\r\n"
 				L"  > 还未成功安装MyH3C服务。请以管理员的身份运行h3c_svr.exe -i。\r\n",
 					L"无法重启MyH3C服务");
@@ -120,7 +128,8 @@ protected:
 				if(!lastTimeConnectable)
 				{
 					if(onMessage)
-						onMessage(L"已经成功通过H3C连接到网络。", L"网络已正常连接");
+						onMessage( RestarterMessageTypeConnectionSucceeded,
+							L"已经成功通过H3C连接到网络。", L"网络已正常连接");
 					lastTimeConnectable = true;
 				}
 				this_thread::sleep(checkInterval);
