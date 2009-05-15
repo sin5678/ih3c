@@ -15,13 +15,19 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_00758B9D407849E58C5BE0B5648C7C71"
+        "MsmKey" = "8:_1914A48FB5584108823F9DB620A4DB4D"
+        "OwnerKey" = "8:_1EFC533E2B7F4DB196546AB78ACB1275"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1EFC533E2B7F4DB196546AB78ACB1275"
         "OwnerKey" = "8:_44DFA5DA38204E76B59CFC7637BF6C68"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_00758B9D407849E58C5BE0B5648C7C71"
+        "MsmKey" = "8:_1EFC533E2B7F4DB196546AB78ACB1275"
         "OwnerKey" = "8:_822D0EC1CFC44D2D8E34C7D575B676F8"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -81,12 +87,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_B10B097472C0474D85D0B09176D50C70"
-        "OwnerKey" = "8:_00758B9D407849E58C5BE0B5648C7C71"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_B7B74E0C63A04FFBAABF82981A5078F8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -100,6 +100,12 @@
         "Entry"
         {
         "MsmKey" = "8:_E1A53D3C31E54CA68E8B1D0FB4E8555E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F43840F3E27B4E1288A286E7C9B2D2F7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -468,6 +474,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F43840F3E27B4E1288A286E7C9B2D2F7"
+            {
+            "SourcePath" = "8:..\\..\\h3c_svr\\log.txt"
+            "TargetName" = "8:log.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_DB98586CA3B248B5B17BC687A17551C8"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
@@ -535,14 +561,14 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:iH3C"
-        "ProductCode" = "8:{5F7ECCC1-8BFE-4D24-91C7-5E33A2E6A085}"
-        "PackageCode" = "8:{FA82F5DD-6339-4705-9F16-6617B284CB06}"
+        "ProductCode" = "8:{CA8DCBCF-B0A0-4DF2-8BE4-75EF1AA628E6}"
+        "PackageCode" = "8:{FC3E69EC-911B-48A3-B441-2E1827F472AE}"
         "UpgradeCode" = "8:{64D9CDE3-B47F-4EA2-81B3-C318766B4145}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:0.1.1"
+        "ProductVersion" = "8:0.1.2"
         "Manufacturer" = "8:Sysu05CS"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://code.google.com/p/ih3c"
@@ -655,6 +681,20 @@
         }
         "Shortcut"
         {
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_5A707377E42342CEB2164F52F8D36A32"
+            {
+            "Name" = "8:编辑用户名、密码、网卡序号 (pw.data)"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_B7B74E0C63A04FFBAABF82981A5078F8"
+            "Folder" = "8:_A51FC1FF924E42B58089049ED8234D1F"
+            "WorkingFolder" = "8:_DB98586CA3B248B5B17BC687A17551C8"
+            "Icon" = "8:"
+            "Feature" = "8:"
+            }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_601F9EB3AF9C4878BFB857ACAECEB01A"
             {
             "Name" = "8:iH3CSvr"
@@ -695,6 +735,20 @@
             "Folder" = "8:_5DA52516810A4D2C97EF33E87EBAF13F"
             "WorkingFolder" = "8:_DB98586CA3B248B5B17BC687A17551C8"
             "Icon" = "8:_822D0EC1CFC44D2D8E34C7D575B676F8"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_F580A1315AB24692A3B2E27372A11084"
+            {
+            "Name" = "8:查看上次连接记录 (log.txt)"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_F43840F3E27B4E1288A286E7C9B2D2F7"
+            "Folder" = "8:_A51FC1FF924E42B58089049ED8234D1F"
+            "WorkingFolder" = "8:_DB98586CA3B248B5B17BC687A17551C8"
+            "Icon" = "8:"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_FB84BCDDF2564FF895BE93FD990EE37C"
@@ -1255,11 +1309,11 @@
         }
         "MergeModule"
         {
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_00758B9D407849E58C5BE0B5648C7C71"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_1914A48FB5584108823F9DB620A4DB4D"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
-            "SourcePath" = "8:policy_9_0_Microsoft_VC90_CRT_x86.msm"
+            "SourcePath" = "8:microsoft_vc90_crt_x86.msm"
                 "Properties"
                 {
                 }
@@ -1269,11 +1323,11 @@
             "Feature" = "8:"
             "IsolateTo" = "8:"
             }
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_B10B097472C0474D85D0B09176D50C70"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_1EFC533E2B7F4DB196546AB78ACB1275"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
-            "SourcePath" = "8:microsoft_vc90_crt_x86.msm"
+            "SourcePath" = "8:policy_9_0_Microsoft_VC90_CRT_x86.msm"
                 "Properties"
                 {
                 }
