@@ -39,7 +39,7 @@ unsigned long _rand(unsigned long t)
 }
 
 
-void GetNIC( int nicIndex)
+void GetNIC( int nicIndex )
 {
 	pcap_if_t *alldevs;
 	pcap_if_t *d;

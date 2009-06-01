@@ -15,19 +15,13 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_1914A48FB5584108823F9DB620A4DB4D"
-        "OwnerKey" = "8:_1EFC533E2B7F4DB196546AB78ACB1275"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_1EFC533E2B7F4DB196546AB78ACB1275"
+        "MsmKey" = "8:_0AA8C0AB06F1441298F90627941590D9"
         "OwnerKey" = "8:_44DFA5DA38204E76B59CFC7637BF6C68"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_1EFC533E2B7F4DB196546AB78ACB1275"
+        "MsmKey" = "8:_0AA8C0AB06F1441298F90627941590D9"
         "OwnerKey" = "8:_822D0EC1CFC44D2D8E34C7D575B676F8"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -89,6 +83,12 @@
         {
         "MsmKey" = "8:_B7B74E0C63A04FFBAABF82981A5078F8"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C5AC5EE7FDAD4791AFE56B1AB6C5C732"
+        "OwnerKey" = "8:_0AA8C0AB06F1441298F90627941590D9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -561,14 +561,14 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:iH3C"
-        "ProductCode" = "8:{CA8DCBCF-B0A0-4DF2-8BE4-75EF1AA628E6}"
-        "PackageCode" = "8:{FC3E69EC-911B-48A3-B441-2E1827F472AE}"
+        "ProductCode" = "8:{C41FC906-719C-49F0-BF98-59412EBF23DE}"
+        "PackageCode" = "8:{42238F30-363C-4EB8-879A-8505F73A8A37}"
         "UpgradeCode" = "8:{64D9CDE3-B47F-4EA2-81B3-C318766B4145}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:0.1.2"
+        "ProductVersion" = "8:0.1.3"
         "Manufacturer" = "8:Sysu05CS"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://code.google.com/p/ih3c"
@@ -1309,11 +1309,11 @@
         }
         "MergeModule"
         {
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_1914A48FB5584108823F9DB620A4DB4D"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_0AA8C0AB06F1441298F90627941590D9"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
-            "SourcePath" = "8:microsoft_vc90_crt_x86.msm"
+            "SourcePath" = "8:policy_9_0_Microsoft_VC90_CRT_x86.msm"
                 "Properties"
                 {
                 }
@@ -1323,11 +1323,11 @@
             "Feature" = "8:"
             "IsolateTo" = "8:"
             }
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_1EFC533E2B7F4DB196546AB78ACB1275"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_C5AC5EE7FDAD4791AFE56B1AB6C5C732"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
-            "SourcePath" = "8:policy_9_0_Microsoft_VC90_CRT_x86.msm"
+            "SourcePath" = "8:microsoft_vc90_crt_x86.msm"
                 "Properties"
                 {
                 }

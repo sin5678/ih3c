@@ -35,7 +35,7 @@ void ControlHandler(DWORD request)
 	case SERVICE_CONTROL_STOP: 
 	case SERVICE_CONTROL_SHUTDOWN: 
 		ReportSvcStatus(SERVICE_STOPPED, NO_ERROR, 3000 );
-		::ExitProcess (0);
+		//::ExitProcess (0);
 		return;
 
 	default:
@@ -84,8 +84,15 @@ void ReportSvcStatus( DWORD dwCurrentState,
 	SetServiceStatus( hStatus, &ServiceStatus );
 }
 
+extern USERDATA stUserData;
+
 void ServiceMain(int /*argc*/, char** /*argv*/) 
 { 
+
+#ifdef _DEBUG
+	::Sleep( 10000 );
+#endif
+
 	ServiceStatus.dwServiceType = 
 		SERVICE_WIN32; 
 	ServiceStatus.dwCurrentState = 
@@ -139,13 +146,32 @@ void ServiceMain(int /*argc*/, char** /*argv*/)
 	DWORD dwBufLen = sizeof(AdapterInfo);
 	DWORD dwStatus = ::GetAdaptersInfo(AdapterInfo,&dwBufLen);
 
-	memcpy (stUserData.Mac, &AdapterInfo[0].Address, sizeof(stUserData.Mac));
+	// Error: 不同的网卡Mac地址也是不同的。
+	//memcpy (stUserData.Mac, &AdapterInfo[0].Address, sizeof(stUserData.Mac));
 
-	GetNIC(ncIndex);//指定得到第几个网卡的信息
+	GetNIC(ncIndex);		//指定得到第几个网卡的信息
 
+	//获得Mac
+	string adapterName = stUserData.nic;
+	adapterName = adapterName.substr( adapterName.find( '{' ) );
+
+	for ( IP_ADAPTER_INFO* pAdapterInfo = AdapterInfo; pAdapterInfo!=NULL; pAdapterInfo=pAdapterInfo->Next )
+	{
+		if ( pAdapterInfo->AdapterName == adapterName )
+		{
+			memcpy( stUserData.Mac, pAdapterInfo->Address, sizeof(stUserData.Mac) );
+			goto __StartSupplicant;
+		}
+	}
+
+	utils::MyH3CError( L"Error: Unable to get Mac addr from adapter name." );
+	ReportSvcStatus( SERVICE_STOPPED, ERROR_BAD_ENVIRONMENT, 3000 );
+	return ;
+
+__StartSupplicant:
 	StartSupplicant ();
 
-	ReportSvcStatus(SERVICE_STOPPED, ERROR_BAD_ENVIRONMENT, 3000);
+	ReportSvcStatus( SERVICE_STOPPED, ERROR_INVALID_DATA, 3000 );
 }
 
 void SvcInstall()
