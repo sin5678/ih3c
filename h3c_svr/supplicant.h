@@ -16,7 +16,7 @@ typedef struct UserData
 	char nic[60];
 }USERDATA;
 
-void GetNIC( int nicIndex);
+BOOL GetNIC( int nicIndex);
 
 void GetMacAddrFromIP(const char *strIP,unsigned char *Mac);
 

@@ -39,30 +39,28 @@ unsigned long _rand(unsigned long t)
 }
 
 
-void GetNIC( int nicIndex )
+BOOL GetNIC( int nicIndex )
 {
-	pcap_if_t *alldevs;
-	pcap_if_t *d;
-	pcap_addr_t *a;
-	int i=0;
-	char errbuf[PCAP_ERRBUF_SIZE];
-	unsigned long uIP;
+	BOOL ret = FALSE;
 
 	//获取设备列表
+	pcap_if_t *alldevs = 0;
+	char errbuf[PCAP_ERRBUF_SIZE] = {0};
 	if (pcap_findalldevs(&alldevs, errbuf) == -1) {
 		utils::MyH3CError(L"error: 获取网卡信息失败,请确认安装了winpcap驱动包!");
-		return;
+		return ret;
 	}
 	//得到每个网卡的描述信息
-	for(d=alldevs; d; d=d->next)
+	int i=0;
+	for(pcap_if_t * d = alldevs; d; d = d->next)
 	{
 		if( i == nicIndex )
 		{
-			for(a=d->addresses;a;a=a->next)
+			for(pcap_addr_t * a=d->addresses;a;a=a->next)
 			{
 				if(a->addr && (a->addr->sa_family == AF_INET) )
 				{
-					uIP = ((struct sockaddr_in *)a->addr)->sin_addr.s_addr;
+					unsigned long uIP = ((struct sockaddr_in *)a->addr)->sin_addr.s_addr;
 					memcpy( stUserData.Ip,(unsigned char *)&uIP,4);
 					memcpy( stUserData.nic,d->name,strlen(d->name)+1);
 					utils::MyH3CError(L"message: 网卡名称:"+string_utils::mbstowcs(std::string(d->name)));
@@ -75,6 +73,27 @@ void GetNIC( int nicIndex )
 	}
 
 	pcap_freealldevs(alldevs);
+
+	//winpcap 目前没有得到mac的通用api
+	IP_ADAPTER_INFO AdapterInfo[8];
+	DWORD dwBufLen = sizeof(AdapterInfo);
+	DWORD dwStatus = ::GetAdaptersInfo(AdapterInfo,&dwBufLen);
+
+	//获得Mac
+	std::string adapterName = stUserData.nic;
+	adapterName = adapterName.substr( adapterName.find( '{' ) );
+
+	for ( IP_ADAPTER_INFO* pAdapterInfo = AdapterInfo; pAdapterInfo!=NULL; pAdapterInfo=pAdapterInfo->Next )
+	{
+		if ( pAdapterInfo->AdapterName == adapterName )
+		{
+			memcpy( stUserData.Mac, pAdapterInfo->Address, sizeof(stUserData.Mac) );
+			ret = TRUE;
+			break;
+		}
+	}
+
+	return ret;
 }
 
 
