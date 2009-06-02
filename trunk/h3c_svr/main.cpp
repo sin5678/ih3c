@@ -142,33 +142,12 @@ void ServiceMain(int /*argc*/, char** /*argv*/)
 	memcpy(stUserData.password, pw.c_str(), 
 		min(pw.size(), sizeof(stUserData.password)));
 
-	IP_ADAPTER_INFO AdapterInfo[8];
-	DWORD dwBufLen = sizeof(AdapterInfo);
-	DWORD dwStatus = ::GetAdaptersInfo(AdapterInfo,&dwBufLen);
-
-	// Error: 不同的网卡Mac地址也是不同的。
-	//memcpy (stUserData.Mac, &AdapterInfo[0].Address, sizeof(stUserData.Mac));
-
-	GetNIC(ncIndex);		//指定得到第几个网卡的信息
-
-	//获得Mac
-	string adapterName = stUserData.nic;
-	adapterName = adapterName.substr( adapterName.find( '{' ) );
-
-	for ( IP_ADAPTER_INFO* pAdapterInfo = AdapterInfo; pAdapterInfo!=NULL; pAdapterInfo=pAdapterInfo->Next )
+	if (GetNIC(ncIndex) == FALSE)		//指定得到第几个网卡的信息
 	{
-		if ( pAdapterInfo->AdapterName == adapterName )
-		{
-			memcpy( stUserData.Mac, pAdapterInfo->Address, sizeof(stUserData.Mac) );
-			goto __StartSupplicant;
-		}
+		ReportSvcStatus( SERVICE_STOPPED, ERROR_BAD_ENVIRONMENT, 3000 );
+		utils::MyH3CError( L"Error: Unable to get adapter's information." );
 	}
 
-	utils::MyH3CError( L"Error: Unable to get Mac addr from adapter name." );
-	ReportSvcStatus( SERVICE_STOPPED, ERROR_BAD_ENVIRONMENT, 3000 );
-	return ;
-
-__StartSupplicant:
 	StartSupplicant ();
 
 	ReportSvcStatus( SERVICE_STOPPED, ERROR_INVALID_DATA, 3000 );
