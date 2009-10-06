@@ -1,6 +1,7 @@
 #define _vsnprintf vsnprintf
+#include <Winsock2.h>
+#include <iphlpapi.h> 
 #include <pcap.h>
-#include <iphlpapi.h>
 #include "md5_wrapper.h"
 
 #include "resource.h"
